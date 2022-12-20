@@ -8,13 +8,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Init() {
+func init() {
 	initializers.LoadEnvVariables()
 	initializers.ConnectToDb()
+	initializers.SyncDatabase()
 }
 
 func main() {
-	Init()
+	//initialize()
 	r := gin.Default()
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
