@@ -85,11 +85,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	tokenPeriod := time.Hour
 	// Create a new token object, specifying signing method and the claims
 	// you would like it to contain.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user":   user.ID,
-		"expiry": time.Now().Add(time.Hour).Unix()})
+		"expiry": time.Now().Add(tokenPeriod).Unix()})
 
 	// Sign and get the complete encoded token as a string using the secret
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET")))
@@ -100,6 +101,8 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.SetSameSite(http.SameSiteDefaultMode)
+	c.SetCookie("Authorization", tokenString, int(tokenPeriod.Seconds()), "", "", false, true)
+	c.JSON(http.StatusOK, gin.H{"message": "token successfully generated"})
 
 }
