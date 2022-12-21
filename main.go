@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alphanumericentity/jwt-example/controllers"
 	"github.com/alphanumericentity/jwt-example/initializers"
+	"github.com/alphanumericentity/jwt-example/middleware"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,7 @@ func main() {
 	r := gin.Default()
 	r.POST("/signup", controllers.Signup)
 	r.POST("/login", controllers.Login)
+	r.GET("/validate", middleware.Authenticate, controllers.Validate)
 	r.Run()
 
 }
